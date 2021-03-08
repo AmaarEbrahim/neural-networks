@@ -1,8 +1,6 @@
-import { Matrix } from "./Matrix"
+import { IMatrix } from "./IMatrix";
 
 export interface IMultiLayeredPerceptron {
-    train();
-    test();
-    feedFoward();
-    backPropagate();
+    train(inputs: IMatrix<number>);
+    test(inputs: IMatrix<number>);
 }

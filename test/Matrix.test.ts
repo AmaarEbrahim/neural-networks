@@ -4,54 +4,90 @@ import * as assert from "assert"
 import { Matrix } from "../src/Matrix";
 
 describe("Matrix class test", function() {
-    let general2x2Array = [
-        [1, 2],
-        [3, 4]
-    ]
 
-    let incorrect2x2Array = [
-        [1, 2],
-        [3]
-    ]
+    let general2x2Array;
+    let incorrect2x2Array;
+    let general2x4Array2D;
+    let general2x4Matrix;
+    let general3x3Matrix;
+    let general2x3Matrix;
+    let general3x2Matrix;
+    let general3x3Matrix2;
+    let general3x3Matrix2Transpose;
+    let general4x3Matrix;
+    let productOf2x4And4x3Matrix;
+    let noRowsArray: Array<Array<number>>;
+    let noColumnsArray: Array<Array<number>>;
+    let arrayWithNullElement;
 
-    let general2x4Array2D = [
-        [1, 2, 4, 5],
-        [7, 9, 33, 12]
-    ]
-    let general2x4Matrix = new Matrix(general2x4Array2D);
-
-    let general3x3Matrix = new Matrix([
-        [1, 5, 7],
-        [9, 11, 13],
-        [15, 17, 19]
-    ])
-
-    let general2x3Matrix = new Matrix([
-        [54, -1, 2],
-        [43, 5, 9]
-    ])
-
-    let general3x2Matrix = new Matrix([
-        [54, -1],
-        [43, 5],
-        [-32, 11]
-    ])
-
-    let general3x3Matrix2 = new Matrix([
-        [2, 4, 6],
-        [1, 81, 3],
-        [9, 36, 25]
-    ])
-
-    let general3x3Matrix2Transpose = new Matrix([
-        [2, 1, 9],
-        [4, 81, 36],
-        [6, 3, 25]        
-    ])
-
-    let noRowsArray: Array<Array<number>> = []
+    beforeEach(function() {
+        general2x2Array = [
+            [1, 2],
+            [3, 4]
+        ]
     
-    let noColumnsArray: Array<Array<number>> = [[], [], []]
+        incorrect2x2Array = [
+            [1, 2],
+            [3]
+        ]
+    
+        general2x4Array2D = [
+            [1, 2, 4, 5],
+            [7, 9, 33, 12]
+        ]
+        general2x4Matrix = new Matrix(general2x4Array2D);
+    
+        general3x3Matrix = new Matrix([
+            [1, 5, 7],
+            [9, 11, 13],
+            [15, 17, 19]
+        ])
+    
+        general2x3Matrix = new Matrix([
+            [54, -1, 2],
+            [43, 5, 9]
+        ])
+    
+        general3x2Matrix = new Matrix([
+            [54, -1],
+            [43, 5],
+            [-32, 11]
+        ])
+    
+        general3x3Matrix2 = new Matrix([
+            [2, 4, 6],
+            [1, 81, 3],
+            [9, 36, 25]
+        ])
+    
+        general3x3Matrix2Transpose = new Matrix([
+            [2, 1, 9],
+            [4, 81, 36],
+            [6, 3, 25]        
+        ])
+
+        general4x3Matrix = new Matrix([
+            [5, 9, -4],
+            [6, 10, 7],
+            [1, 3, 0],
+            [8, 3, 12]
+        ])
+    
+        productOf2x4And4x3Matrix = new Matrix([
+            [61, 56, 70],
+            [218, 288, 179]
+        ])
+
+        noRowsArray = []
+        
+        noColumnsArray = [[], [], []]
+
+        arrayWithNullElement = [
+            [1, 2, null], 
+            [4, 5, 6]
+        ]
+    })
+
 
     describe("Constructor testing", function() {
 
@@ -102,7 +138,19 @@ describe("Matrix class test", function() {
             assert.ok(caught);               
         })
 
-        it("Does not create a matrix because an element is null")
+        it("Does not create a matrix because an element is null", function() {
+            assert.throws(function() {
+                new Matrix(arrayWithNullElement);
+            })
+        })
+    })
+
+    describe("fromDimensions testing", function() {
+        it("successfully creates a matrix");
+        it("errors because the rows field is null");
+        it("errors because the columns field is null");
+        it("errors because the rows field is less than 1");
+        it("errors because the columns field is less than 1");
     })
 
     describe("Getters testing", function() {
@@ -184,7 +232,58 @@ describe("Matrix class test", function() {
 
     describe("setCell(number, number, number)", function() {
 
-        it("Successfully sets the correct cell")
+        it("Successfully sets the correct cell", function() {
+            let row = 2, column = 3;
+            let curCellValue = general3x3Matrix.getCell(row, column);
+            let newCellValue = curCellValue + 1;
+            general3x3Matrix.setCell(row, column, newCellValue);
+            let actual = general3x3Matrix.getCell(row, column);
+            let expected = newCellValue;
+            assert.strictEqual(actual, expected);
+        });
+
+        it("Errors because the row is null", function() {
+            assert.throws(function() {
+                let row = null, column = 3;
+                general3x3Matrix.setCell(row, column, 56);
+            }, Error)
+        });
+        it("Errors because the column is null", function() {
+            assert.throws(function() {
+                let row = 1, column = null;
+                general3x3Matrix.setCell(row, column, 56);
+            }, Error)
+        });
+        it("Errors because the row is too high", function() {
+            assert.throws(function() {
+                let row = 4, column = 2;
+                general3x3Matrix.setCell(row, column, 56);
+            }, Error)
+        });
+        it("Errors because the row is too low", function() {
+            assert.throws(function() {
+                let row = 0, column = 2;
+                general3x3Matrix.setCell(row, column, 56);
+            }, Error)
+        });
+        it("Errors because the column is too high", function() {
+            assert.throws(function() {
+                let row = 1, column = 4;
+                general3x3Matrix.setCell(row, column, 56);
+            }, Error)
+        });
+        it("Errors because the column is too low", function() {
+            assert.throws(function() {
+                let row = 1, column = 0;
+                general3x3Matrix.setCell(row, column, 56);
+            }, Error)
+        });
+        it("Errors because the new value is null", function() {
+            assert.throws(function() {
+                let row = 2, column = 2;
+                general3x3Matrix.setCell(row, column, null);
+            }, Error)
+        });
     })
 
 
@@ -290,7 +389,23 @@ describe("Matrix class test", function() {
     })
 
     describe("multiply(Matrix<T>) testing", function() {
-        
+        it("Multiplies two matrices correctly", function() {
+            let matrixProduct: Matrix = general2x4Matrix.multiply(
+                general4x3Matrix);
+            let equals: boolean = matrixProduct.equals(productOf2x4And4x3Matrix);
+
+            assert.ok(equals);
+        });
+        it("Errors because the number of columns in the first matrix is not equal to the number of rows in the second", function() {
+            assert.throws(function() {
+                general2x3Matrix.multiply(general2x4Matrix);
+            }, Error);
+        });
+        it("Errors because the matrix is null", function() {
+            assert.throws(function() {
+                general2x3Matrix.multiply(null);
+            })
+        });
     })
 
     describe("hadamard(Matrix<T>) testing", function() {

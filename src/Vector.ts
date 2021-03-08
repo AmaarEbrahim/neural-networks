@@ -57,7 +57,7 @@ export class Vector implements IVector {
      * the new value to. Errors if null or if the passed position is outside of 
      * the boundaries. See the Class Notes for information on position vs. 
      * index.
-     * @param newValue the new value
+     * @param newValue the new value. Errors if out of bounds.
      */
     public setValue(position: number, newValue: number): void {
         if (position == null) {
@@ -182,6 +182,14 @@ export class Vector implements IVector {
         return position < 1 || position > this.length();
     } 
 
-    
+
+    /**
+     * toString
+     */
+    public toString(): string {
+        return this.elements.toString();
+    }
+
+
     
 }

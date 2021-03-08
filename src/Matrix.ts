@@ -9,8 +9,9 @@
 
 import { IMatrix } from "./IMatrix";
 import { Vector } from "./Vector";
+import { INumericalMatrix } from "./INumericalMatrix"
 
-export class Matrix implements IMatrix<number> {
+export class Matrix implements INumericalMatrix {
 
     //////////////////////////////////////////////////
     ///////////////////// FIELDS /////////////////////
@@ -28,12 +29,14 @@ export class Matrix implements IMatrix<number> {
             throw new Error("elementsIn cannot be null");
         }
 
-        if (Matrix.is2DArrayValid(elementsIn)) {
+        let {result, message} = Matrix.is2DArrayValid(elementsIn);
+
+        if (result) {
             this.elements = elementsIn;
             this.rows = elementsIn.length;
             this.columns = elementsIn[0].length;
         } else {
-            throw new Error("2D array is not valid");
+            throw new Error("2D array is not valid: " + message);
         }
         
     }
@@ -54,10 +57,11 @@ export class Matrix implements IMatrix<number> {
             throw new Error("Columns can't be less than 1");
         }
 
-        let emptyArray = new Array<Array<number>>(rows);
+        let emptyArray = new Array<Array<number>>();
 
         //populate empty array
         for (let i = 0; i < rows; i++) {
+            emptyArray[i] = new Array<number>();
             for (let j = 0; j < columns; j++) {
                 emptyArray[i][j] = initialValue;
             }
@@ -69,7 +73,7 @@ export class Matrix implements IMatrix<number> {
     //////////////////////////////////////////////////
     //////////////// PRIVATE METHODS /////////////////
     //////////////////////////////////////////////////
-    private static is2DArrayValid(array2D: number[][]): boolean {
+    private static is2DArrayValid(array2D: number[][]): {result: boolean, message: string | void } {
 
         if (array2D == null) {
             throw new Error("2D array cannot be null");
@@ -78,22 +82,44 @@ export class Matrix implements IMatrix<number> {
         let rows = array2D.length;
 
         if (rows == 0) {
-            throw new Error("Matrix cannot have 0 rows");
+            return {
+                result: false,
+                message: "The number of rows is 0"
+            };
         }
 
         let columns = array2D[0].length;
 
         if (columns == 0) {
-            throw new Error("Matrix cannot have 0 columns")
+            return {
+                result: false,
+                message: "The number of columns is 0"
+            };
         }
 
-        for (let i = 1; i < rows; i++) {
-            if (array2D[i].length != columns) {
-                return false;
+        for (let row = 0; row < rows; row++) {
+            let numberOfColumnsInRow = array2D[row].length 
+            if (numberOfColumnsInRow != columns) {
+                return {
+                    result: false,
+                    message: "There is an inconsistent number of columns"
+                };
+            }
+
+            for (let column = 0; column < columns; column++) {
+                if (array2D[row][column] == null) {
+                    return {
+                        result: false,
+                        message: "There is a null element"
+                    }
+                }
             }
         }
 
-        return true;
+        return {
+            result: true,
+            message: null
+        };
     }
 
     private isRowNumberValid(n: number): boolean {
@@ -173,7 +199,7 @@ export class Matrix implements IMatrix<number> {
         let row: number[] = this.elements[realRowNumber];
         let rowCopy: number[] = new Array<number>();
 
-        for (let i = 0; i < this.rows; i++) {
+        for (let i = 0; i < this.columns; i++) {
             rowCopy[i] = row[i];
         }
 
@@ -193,7 +219,7 @@ export class Matrix implements IMatrix<number> {
         let realRowNumber: number = columnNumber - 1;
         let columnCopy: number[] = new Array<number>();
 
-        for (let i = 0; i < this.columns; i++) {
+        for (let i = 0; i < this.rows; i++) {
             columnCopy[i] = this.elements[i][realRowNumber];
         }
 
@@ -214,11 +240,6 @@ export class Matrix implements IMatrix<number> {
         }
 
         return new Matrix(new2DArray);
-    }
-
-    //wip
-    public forEachElement() {
-
     }
 
     public equals(matrix: Matrix): boolean {
@@ -274,12 +295,26 @@ export class Matrix implements IMatrix<number> {
 
                 let newCellValue = rowVector.dot(columnVector);
 
-                newMatrix.setCell(thisRowIndex, otherColumnIndex, newCellValue);
+                newMatrix.setCell(thisRowIndex + 1, otherColumnIndex + 1, 
+                    newCellValue);
                 
             }
         }
 
         return newMatrix;
+    }
+
+    public toString(): string {
+
+        let str: string = "";
+
+        for (let i = 0; i < this.rows; i++) {
+            console.log(i);
+            str += this.elements[0].toString() + "\n";
+        }
+
+        return str;
+
     }
 
     public setCell(row: number, column: number, value: number): boolean {
@@ -296,8 +331,12 @@ export class Matrix implements IMatrix<number> {
             throw new Error("Row number is invalid");
         }
 
-        if (this.isColumnNumberValid(column)) {
+        if (this.isColumnNumberValid(column) == false) {
             throw new Error("Column number is invalid")
+        }
+
+        if (value == null) {
+            throw new Error("Value cannot be null")
         }
 
         let rowIndex = row - 1;
@@ -308,6 +347,9 @@ export class Matrix implements IMatrix<number> {
         return true;
     }
 
+    public hadamardProduct(other: Matrix): Matrix {
+        return null;
+    }
 
 }
 

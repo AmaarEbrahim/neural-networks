@@ -14,19 +14,19 @@ export class MultiLayeredPerceptron implements IMultiLayeredPerceptron {
         this.biases = initialBiases;
     }
 
-    train() {
+    public train() {
         throw new Error("Method not implemented.");
     }
 
-    test() {
+    public test() {
         throw new Error("Method not implemented.");
     }
 
-    feedFoward() {
+    private feedFoward() {
         throw new Error("Method not implemented.");
     }
 
-    backPropagate() {
+    private backPropagate() {
         throw new Error("Method not implemented.");
     }
     
