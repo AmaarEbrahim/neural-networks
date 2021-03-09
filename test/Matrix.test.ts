@@ -411,4 +411,14 @@ describe("Matrix class test", function() {
     describe("hadamard(Matrix<T>) testing", function() {
 
     })
+
+    describe("add(Matrix<T>) testing", function() {
+        it("Successfully adds two matrices");
+        it("errors because the matrices have a different number of rows");
+        it("errors because the matrices have a different number of columns");
+    })
+
+    describe("sameDimensions(Matrix) testing", function() {
+        
+    })
 })

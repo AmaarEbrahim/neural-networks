@@ -15,6 +15,7 @@ export class MultiLayeredPerceptron implements IMultiLayeredPerceptron {
     }
 
     public train(inputs: Matrix) {
+        //check if inputs is a 1xN
         let cost: number = this.feedFoward(inputs);
     }
 
@@ -23,7 +24,9 @@ export class MultiLayeredPerceptron implements IMultiLayeredPerceptron {
     }
 
     private feedFoward(inputs: Matrix): number {
-        this.weights
+        this.weights.forEach((weightMatrix: Matrix, key: number) => {
+            let weightedInput: Matrix = inputs.multiply(weightMatrix)
+        })
         throw new Error("Method not implemented.");
     }
 
