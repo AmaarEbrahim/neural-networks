@@ -3,26 +3,27 @@ import { IMultiLayeredPerceptron } from "./IMultiLayeredPerceptron";
 
 export class MultiLayeredPerceptron implements IMultiLayeredPerceptron {
 
-    private weights: Matrix;
+    private weights: Array<Matrix>;
     private biases: Matrix;
     private learningRate = .1;
     private costFunction;
 
-    constructor(initialWeights: Matrix, initialBiases: Matrix) {
+    constructor(initialWeights: Array<Matrix>, initialBiases: Matrix) {
         
         this.weights = initialWeights;
         this.biases = initialBiases;
     }
 
-    public train() {
-        throw new Error("Method not implemented.");
+    public train(inputs: Matrix) {
+        let cost: number = this.feedFoward(inputs);
     }
 
     public test() {
         throw new Error("Method not implemented.");
     }
 
-    private feedFoward() {
+    private feedFoward(inputs: Matrix): number {
+        this.weights
         throw new Error("Method not implemented.");
     }
 

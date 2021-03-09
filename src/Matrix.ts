@@ -7,7 +7,6 @@
  * @author Amaar Ebrahim
  */
 
-import { IMatrix } from "./IMatrix";
 import { Vector } from "./Vector";
 import { INumericalMatrix } from "./INumericalMatrix"
 
@@ -186,7 +185,7 @@ export class Matrix implements INumericalMatrix {
         return this.elements[realRow][realColumn];
     }
 
-    public getRowCopy(rowNumber: number) {
+    public getRowCopy(rowNumber: number): Array<number> {
         if (rowNumber == null) {
             throw new Error("Row can't be null");
         }
@@ -207,7 +206,7 @@ export class Matrix implements INumericalMatrix {
 
     }
 
-    public getColumnCopy(columnNumber: number) {
+    public getColumnCopy(columnNumber: number): Array<number> {
         if (columnNumber == null) {
             throw new Error("Row can't be null");
         }
@@ -242,7 +241,7 @@ export class Matrix implements INumericalMatrix {
         return new Matrix(new2DArray);
     }
 
-    public equals(matrix: Matrix): boolean {
+    public equals(matrix: INumericalMatrix): boolean {
 
         if (matrix == null) {
             throw new Error("Matrix passed cannot be null");
@@ -270,7 +269,7 @@ export class Matrix implements INumericalMatrix {
 
     }
 
-    public multiply(other: Matrix): Matrix {
+    public multiply(other: INumericalMatrix): Matrix {
         if (other == null) {
             throw new Error("Matrix cannot be null!");
         }
@@ -280,7 +279,7 @@ export class Matrix implements INumericalMatrix {
         }
 
         let newRows = this.rows;
-        let newColumns = other.columns;
+        let newColumns = other.getColumnNumber();
 
         let newMatrix = Matrix.fromDimensions(newRows, newColumns, 0);
 
@@ -347,7 +346,15 @@ export class Matrix implements INumericalMatrix {
         return true;
     }
 
-    public hadamardProduct(other: Matrix): Matrix {
+    public hadamardProduct(other: INumericalMatrix): INumericalMatrix {
+        return null;
+    }
+
+    public add(other: INumericalMatrix): INumericalMatrix {
+        return null;
+    }
+
+    public sameDimensions(other: INumericalMatrix): boolean {
         return null;
     }
 
