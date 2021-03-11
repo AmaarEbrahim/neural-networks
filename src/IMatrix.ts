@@ -7,4 +7,5 @@ export interface IMatrix<T> {
     getRowNumber(): number;
     getColumnNumber(): number;
     getElements2DArray(): Array<Array<T>>;
+    sameDimensions(other: IMatrix<T>): boolean;
 }

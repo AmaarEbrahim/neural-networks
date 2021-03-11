@@ -2,23 +2,27 @@ import * as mocha from "mocha";
 import * as chai from "chai";
 import * as assert from "assert"
 import { Matrix } from "../src/Matrix";
+import { INumericalMatrix } from "../src/INumericalMatrix";
 
 describe("Matrix class test", function() {
 
-    let general2x2Array;
-    let incorrect2x2Array;
-    let general2x4Array2D;
-    let general2x4Matrix;
-    let general3x3Matrix;
-    let general2x3Matrix;
-    let general3x2Matrix;
-    let general3x3Matrix2;
-    let general3x3Matrix2Transpose;
-    let general4x3Matrix;
-    let productOf2x4And4x3Matrix;
+    let general2x2Array: Array<Array<number>>;
+    let incorrect2x2Array: Array<Array<number>>;
+    let general2x4Array2D: Array<Array<number>>;
+    let general2x4Matrix: Matrix;
+    let general3x3Matrix: Matrix;
+    let general2x3Matrix: Matrix;
+    let general3x2Matrix: Matrix;
+    let general3x3Matrix2: Matrix;
+    let general3x3Matrix2Transpose: Matrix;
+    let general4x3Matrix: Matrix;
+    let productOf2x4And4x3Matrix: Matrix;
     let noRowsArray: Array<Array<number>>;
     let noColumnsArray: Array<Array<number>>;
-    let arrayWithNullElement;
+    let arrayWithNullElement: Array<Array<number>>;
+    let sumOfGeneral3x3MatrixAndGeneral3x3Matrix2: Matrix;
+    let differenceOfGeneral3x3MatrixAndGeneral3x3Matrix2: Matrix;
+    let hadamardProductOfGeneral3x3MatrixAndGeneral3x3Matrix2: Matrix;
 
     beforeEach(function() {
         general2x2Array = [
@@ -86,6 +90,26 @@ describe("Matrix class test", function() {
             [1, 2, null], 
             [4, 5, 6]
         ]
+
+        sumOfGeneral3x3MatrixAndGeneral3x3Matrix2 = new Matrix([
+            [3, 9, 13],
+            [10, 92, 16],
+            [24, 53, 44]
+        ])
+
+        differenceOfGeneral3x3MatrixAndGeneral3x3Matrix2 = new Matrix([
+            [1, -1, -1],
+            [-8, 70, -10],
+            [-6, 19, 6]
+        ])
+
+        hadamardProductOfGeneral3x3MatrixAndGeneral3x3Matrix2 = new Matrix([
+            [2, 20, 42],
+            [9, 11*81, 39],
+            [15*9, 36*17, 19*25]
+        ])
+
+
     })
 
 
@@ -409,16 +433,78 @@ describe("Matrix class test", function() {
     })
 
     describe("hadamard(Matrix<T>) testing", function() {
-
-    })
-
-    describe("add(Matrix<T>) testing", function() {
-        it("Successfully adds two matrices");
+        it("succesfully calculates the hadamard product of two matrices");
         it("errors because the matrices have a different number of rows");
         it("errors because the matrices have a different number of columns");
     })
 
-    describe("sameDimensions(Matrix) testing", function() {
-        
+    describe("add(Matrix<T>) testing", function() {
+        it("Successfully adds two matrices", function() {
+            let expected: INumericalMatrix = general3x3Matrix.add(general3x3Matrix2);
+            let same: boolean = expected.equals(
+                sumOfGeneral3x3MatrixAndGeneral3x3Matrix2);
+            assert.ok(same);
+        });
+        it("errors because the matrices have a different number of rows", function() {
+            assert.throws(function() {
+                general3x3Matrix.add(general2x3Matrix);
+            }, Error);
+        });
+        it("errors because the matrices have a different number of columns", function() {
+            assert.throws(function() {
+                general3x3Matrix.add(general3x2Matrix);
+            }, Error);
+        });
     })
+
+    describe("sameDimensions(Matrix) testing", function() {
+        it("successfully determines that two matrices have the same dimensions", function() {
+            let same: boolean = general3x3Matrix.sameDimensions(general3x3Matrix2);
+            assert.ok(same);
+        });
+        it("successfully determines that two matrices have different dimensions", function() {
+            let same: boolean = general3x3Matrix.sameDimensions(general2x3Matrix);
+            assert.strictEqual(same, false);
+        });
+    })
+
+    describe("subtract(Matrix) testing", function() {
+        it("succesfully calculates the difference between two matrices", function() {
+            let diff: INumericalMatrix = general3x3Matrix2.subtract(general3x3Matrix);
+            let equals: boolean = diff.equals(
+                differenceOfGeneral3x3MatrixAndGeneral3x3Matrix2)
+            assert.ok(equals);
+        });
+        it("errors because the matrices have differing numbers of rows", function() {
+            assert.throws(function() {
+                general3x3Matrix.subtract(general2x3Matrix);
+            }, Error)
+        });
+        it("errors because the matrices have a different number of columns", function() {
+            assert.throws(function() {
+                general3x3Matrix.subtract(general3x2Matrix);
+            }, Error)
+        });
+    })
+
+    describe("hadamard(Matrix) testing", function() {
+        it("succesfully calculates the hadamard product", function() {
+            let hadamard: INumericalMatrix = general3x3Matrix2.hadamardProduct(
+                general3x3Matrix);
+            let equals: boolean = hadamard.equals(
+                hadamardProductOfGeneral3x3MatrixAndGeneral3x3Matrix2)
+            assert.ok(equals);
+        });
+        it("errors because the matrices have a different number of rows", function() {
+            assert.throws(function() {
+                general3x3Matrix.hadamardProduct(general2x3Matrix);
+            }, Error)
+        });
+        it("errors because the matrices have a different number of columns", function() {
+            assert.throws(function() {
+                general3x3Matrix.hadamardProduct(general3x2Matrix);
+            }, Error)  
+        });
+    })
+
 })

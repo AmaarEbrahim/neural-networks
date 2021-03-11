@@ -129,6 +129,17 @@ export class Matrix implements INumericalMatrix {
         return n <= this.columns && n >= 1;
     }
 
+    private getElementsCopy(): Array<Array<number>> {
+        let elementsCopy = new Array<Array<number>>();
+
+        for (let rowNumber = 1; rowNumber <= this.rows; rowNumber++) {
+            let rowCopy: Array<number> = this.getRowCopy(rowNumber);
+            elementsCopy.push(rowCopy);
+        }   
+
+        return elementsCopy;
+    }
+
 
     //////////////////////////////////////////////////
     ///////////////// PUBLIC METHODS /////////////////
@@ -230,10 +241,8 @@ export class Matrix implements INumericalMatrix {
 
         for (let c = 0; c < this.columns; c++) {
             new2DArray[c] = new Array<number>();
-        }
-
-        for (let r = 0; r < this.rows; r++) {
-            for (let c = 0; c < this.columns; c++) {
+            for (let r = 0; r < this.rows; r++) {
+            
                 new2DArray[c][r] = this.elements[r][c];
             }
         }
@@ -308,8 +317,7 @@ export class Matrix implements INumericalMatrix {
         let str: string = "";
 
         for (let i = 0; i < this.rows; i++) {
-            console.log(i);
-            str += this.elements[0].toString() + "\n";
+            str += this.elements[i].toString() + "\n";
         }
 
         return str;
@@ -347,17 +355,113 @@ export class Matrix implements INumericalMatrix {
     }
 
     public hadamardProduct(other: INumericalMatrix): INumericalMatrix {
-        return null;
+        if (other == null) {
+            throw new Error("Passed matric cannot be null");
+        }
+
+        if(this.sameDimensions(other) == false) {
+            throw new Error("Passed matrix does not have the same dimensions");
+        }
+
+        let newMatrix: Matrix = Matrix.fromDimensions(this.rows, this.columns, 0);
+
+        this.forEach((value: number, rowNumber: number, columnNumber) => {
+            let otherValue: number = other.getCell(rowNumber, columnNumber);
+            let product: number = value * otherValue;
+            newMatrix.setCell(rowNumber, columnNumber, product);
+        })
+
+        return newMatrix;
     }
 
     public add(other: INumericalMatrix): INumericalMatrix {
-        return null;
+
+        if (other == null) {
+            throw new Error("Passed matrix cannot be null");
+        }
+
+        if (this.rows != other.getRowNumber()) {
+            throw new Error("Passed matrix does not have the same number of rows");
+        }
+
+        if (this.columns != other.getColumnNumber()) {
+            throw new Error("Passed matrix does not have the same number of columns");
+        }
+
+        let newMatrix: Matrix = Matrix.fromDimensions(this.rows, this.columns, 
+            0);
+
+        this.elements.forEach((row, rowIndex) => {
+
+            for (let columnIndex = 0; columnIndex < this.columns; 
+                columnIndex++) {
+
+                let thisValue = this.getCell(rowIndex + 1, columnIndex + 1);
+                let thatValue = other.getCell(rowIndex + 1, columnIndex + 1);
+                let sum = thisValue + thatValue;
+                newMatrix.setCell(rowIndex + 1, columnIndex + 1, sum);
+            }
+        })
+
+        return newMatrix;
     }
 
     public sameDimensions(other: INumericalMatrix): boolean {
-        return null;
+        if (other == null) {
+            throw new Error("Passed matrix cannot be null");
+        }
+
+        return (this.rows == other.getRowNumber()) && 
+            (this.columns == other.getColumnNumber());
+    }
+
+    public subtract(other: INumericalMatrix): INumericalMatrix {
+        if (other == null) {
+            throw new Error("Passed matrix cannot be null");
+        }
+
+        if (this.rows != other.getRowNumber()) {
+            throw new Error("Passed matrix does not have the same number of rows");
+        }
+
+        if (this.columns != other.getColumnNumber()) {
+            throw new Error("Passed matrix does not have the same number of columns");
+        }
+
+        let negatedMatrix = other.negative();
+        let subMatrix = this.add(negatedMatrix);
+        
+        return subMatrix;
+    }
+
+    public negative(): INumericalMatrix {
+        
+        let copy: Array<Array<number>> = this.getElementsCopy();
+        let newMatrix = new Matrix(copy);
+        newMatrix.forEach((cellValue: number, rowNumber: number, 
+            columnNumber: number) => {
+
+            newMatrix.setCell(rowNumber, columnNumber, cellValue * (-1));
+
+        })
+
+        return newMatrix;
+    }   
+
+
+    public forEach(f: (value: number, rowNumber: number, columnNumber) => 
+        void): void {
+
+        for (let rN = 1; rN <= this.rows; rN++) {
+            for (let cN = 1; cN <= this.columns; cN++) {
+                f(this.getCell(rN, cN), rN, cN);
+            }
+        }
+
     }
 
 }
+
+
 
 
